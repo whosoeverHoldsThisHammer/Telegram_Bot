@@ -32,7 +32,23 @@ app.post("*", (req, res)=> {
     console.log(req.body)
 
     const chatId = req.body.message.chat.id
-    const text = "Hola, en qué puedo ayudarte?" // Reemplazar por llamada al LLM
+    let text = "Hola, en qué puedo ayudarte?" // Reemplazar por llamada al LLM
+
+    if(req.body.message.photo){
+        text = "Lo siento. No estoy preparado para interpretar imágenes.\n Por favor, cargá un ticket en Jira."
+    }
+
+    if(req.body.message.voice){
+        text = "Lo siento. No estoy preparado para interpretar audios.\n Por favor, cargá un ticket en Jira."
+    }
+
+    if(req.body.message.document){
+        text = "Lo siento. No estoy preparado para interpretar documentos.\n Por favor, cargá un ticket en Jira."
+    }
+
+    if(req.body.message.poll){
+        text = "Lo siento. No estoy preparado para responder encuestas.\n ¿Qué querías preguntarme?."
+    }
 
     sendMessage(chatId, text).then(result => console.log("Mensaje enviado")).catch(error => console.log("Algo salío mal"))
     res.send("Hello World")
