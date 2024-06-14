@@ -4,7 +4,7 @@ import * as dotenv from "dotenv"
 dotenv.config();
 
 const TOKEN = process.env.TELEGRAM_BOT_TOKEN
-const webhook = "" // actualizar cada vez que se levanta ngrok
+const webhook = "https://2072-190-189-138-91.ngrok-free.app" // actualizar cada vez que se levanta ngrok
 
 
 axios.post(`https://api.telegram.org/bot${TOKEN}/setWebhook`, {
