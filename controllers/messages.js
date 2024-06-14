@@ -33,11 +33,26 @@ const sendMessageWithButton = (chatId, message) => {
       reply_markup: {
         'inline_keyboard': [
             [
-                { "text": "👍🏻", "callback_data": "positive" },
-                { "text": "👎🏻", "callback_data": "negative" }
+                { "text": "👍🏻", "callback_data": "Positiva" },
+                { "text": "👎🏻", "callback_data": "Negativa" }
             ]
         ]
       }
+    }
+
+    return axios.post(url, data)
+
+}
+
+
+const updateMessage = (chatId, messageId)=> {
+
+    const url = `${BASE_URL}/editMessageReplyMarkup`
+
+    const data = {
+        chat_id: chatId,
+        message_id: messageId,
+        reply_markup: {}
     }
 
     return axios.post(url, data)
@@ -51,15 +66,20 @@ const handleMessage = async(req, res) => {
         let chatId
 
         if (req.body.callback_query) {
-            // console.log('Callback query');
-            // console.log(req.body.callback_query.message.chat)
-
+            
             const { message } = req.body.callback_query
-            let chatId = message.chat.id
 
-            console.log(req.body.callback_query.data)
+            let chatId = message.chat.id
+            let messageId = message.message_id
+            let feedback = req.body.callback_query.data
+            
+            console.log("Chat id: " + chatId)
+            console.log("Calificación: " + feedback)
+            console.log("Message id: " + messageId)
 
             let answer = "Gracias por el feedback"
+
+            updateMessage(chatId, messageId)
 
             sendMessage(chatId, answer)
             .then(result => console.log("Mensaje enviado"))
@@ -100,7 +120,7 @@ const handleMessage = async(req, res) => {
                     .catch(error => console.log("Algo salío mal"))
 
                 } else {
-                    answer = "Respuesta generada por IA"
+                    answer = "Respuesta generada por la IA"
 
                     sendMessageWithButton(chatId, answer)
                     .then(result => console.log("Mensaje enviado"))
@@ -112,49 +132,6 @@ const handleMessage = async(req, res) => {
 
         }
 
-        // console.log(req.body.callback_query)
-        // console.log(req.body.message.chat)
-
-        /*const { message } = req.body
-        
-        const chatId = message.chat.id
-        let answer
-
-        
-        if(message.photo){
-            
-            answer = "Lo siento. No estoy preparado para interpretar imágenes.\n Por favor, cargá un ticket en Jira."
-
-        } else if(message.voice){
-            
-            answer = "Lo siento. No estoy preparado para interpretar audios.\n Por favor, cargá un ticket en Jira."
-
-        } else if(message.document){
-            
-            answer = "Lo siento. No estoy preparado para interpretar documentos.\n Por favor, cargá un ticket en Jira."
-
-        } else if (message.poll){
-            
-            answer = "Lo siento. No estoy preparado para responder encuestas.\n ¿Qué querías preguntarme?."
-
-        } else {
-
-            // answer = "Hola, en qué puedo ayudarte?" // Reemplazar por llamada a servicio integrador o LLM
-            // answer = "Todavía no puedo contestarte preguntas de la base de conocimiento \n\n [Te mando un pikachu](https://www.destructoid.com/wp-content/uploads/2020/12/473652-pika.jpg)"
-
-            isStartCommand(message.text) ? answer = "Bienvenido!" : answer = "Hola"
-
-        }
-        */
-    
-        /* sendMessage(chatId, answer)
-        .then(result => console.log("Mensaje enviado"))
-        .catch(error => console.log("Algo salío mal"))*/
-
-        /* sendMessageWithButton(chatId, answer)
-        .then(result => console.log("Mensaje enviado"))
-        .catch(error => console.log("Algo salío mal")) */
-        
         res.send("Hello World")
 
     } catch (error){
