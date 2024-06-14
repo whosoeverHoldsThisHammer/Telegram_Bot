@@ -61,6 +61,8 @@ const updateMessage = (chatId, messageId)=> {
 
 const handleMessage = async(req, res, next) => {
     try {
+        
+        req.session.user = "Test"
         console.log(req.session.id)
 
         let chatId
