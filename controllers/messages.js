@@ -24,38 +24,40 @@ const sendMessage = (chatId, message) => {
 const handleMessage = async(req, res) => {
     try {
         console.log(req.body)
+
+        const { message } = req.body
         
-        const chatId = req.body.message.chat.id
-        let text
+        const chatId = message.chat.id
+        let answer
 
         
-        if(req.body.message.photo){
+        if(message.photo){
             
-            text = "Lo siento. No estoy preparado para interpretar imágenes.\n Por favor, cargá un ticket en Jira."
+            answer = "Lo siento. No estoy preparado para interpretar imágenes.\n Por favor, cargá un ticket en Jira."
 
-        } else if(req.body.message.voice){
+        } else if(message.voice){
             
-            text = "Lo siento. No estoy preparado para interpretar audios.\n Por favor, cargá un ticket en Jira."
+            answer = "Lo siento. No estoy preparado para interpretar audios.\n Por favor, cargá un ticket en Jira."
 
-        } else if(req.body.message.document){
+        } else if(message.document){
             
-            text = "Lo siento. No estoy preparado para interpretar documentos.\n Por favor, cargá un ticket en Jira."
+            answer = "Lo siento. No estoy preparado para interpretar documentos.\n Por favor, cargá un ticket en Jira."
 
-        } else if (req.body.message.poll){
+        } else if (message.poll){
             
-            text = "Lo siento. No estoy preparado para responder encuestas.\n ¿Qué querías preguntarme?."
+            answer = "Lo siento. No estoy preparado para responder encuestas.\n ¿Qué querías preguntarme?."
 
         } else {
 
-            // text = "Hola, en qué puedo ayudarte?" // Reemplazar por llamada a servicio integrador o LLM
-            // text = "Todavía no puedo contestarte preguntas de la base de conocimiento \n\n [Te mando un pikachu](https://www.destructoid.com/wp-content/uploads/2020/12/473652-pika.jpg)"
+            // answer = "Hola, en qué puedo ayudarte?" // Reemplazar por llamada a servicio integrador o LLM
+            // answer = "Todavía no puedo contestarte preguntas de la base de conocimiento \n\n [Te mando un pikachu](https://www.destructoid.com/wp-content/uploads/2020/12/473652-pika.jpg)"
 
-            isStartCommand(req.body.message.text) ? text = "Bienvenido!" : text = "Hola"
+            isStartCommand(message.text) ? answer = "Bienvenido!" : answer = "Hola"
 
         }
         
     
-        sendMessage(chatId, text)
+        sendMessage(chatId, answer)
         .then(result => console.log("Mensaje enviado"))
         .catch(error => console.log("Algo salío mal"))
         
