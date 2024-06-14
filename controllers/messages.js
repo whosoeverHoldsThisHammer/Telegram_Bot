@@ -1,5 +1,6 @@
 import axios from 'axios'
 import * as dotenv from 'dotenv'
+import { isStartCommand } from '../utils/regex.js';
 
 dotenv.config();
 
@@ -47,8 +48,10 @@ const handleMessage = async(req, res) => {
         } else {
 
             // text = "Hola, en qué puedo ayudarte?" // Reemplazar por llamada a servicio integrador o LLM
+            // text = "Todavía no puedo contestarte preguntas de la base de conocimiento \n\n [Te mando un pikachu](https://www.destructoid.com/wp-content/uploads/2020/12/473652-pika.jpg)"
 
-            text = "Todavía no puedo contestarte preguntas de la base de conocimiento \n\n [Te mando un pikachu](https://www.destructoid.com/wp-content/uploads/2020/12/473652-pika.jpg)"
+            isStartCommand(req.body.message.text) ? text = "Bienvenido!" : text = "Hola"
+
         }
         
     
