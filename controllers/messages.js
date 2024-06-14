@@ -15,7 +15,30 @@ const sendMessage = (chatId, message) => {
       chat_id: chatId,
       text: message,
       parse_mode: 'Markdown'
-    };
+    }
+
+    return axios.post(url, data)
+
+}
+
+
+const sendMessageWithButton = (chatId, message) => {
+
+    const url = `${BASE_URL}/sendMessage`
+
+    const data = {
+      chat_id: chatId,
+      text: message,
+      parse_mode: 'Markdown',
+      reply_markup: {
+        'inline_keyboard': [
+            [
+                { "text": "👍🏻 Me sirve", "callback_data": "positive" },
+                { "text": "👎🏻 No me sirve", "callback_data": "negative" }
+            ]
+        ]
+      }
+    }
 
     return axios.post(url, data)
 
@@ -23,9 +46,18 @@ const sendMessage = (chatId, message) => {
 
 const handleMessage = async(req, res) => {
     try {
-        console.log(req.body)
+        //console.log(req.body)
 
-        const { message } = req.body
+        if (req.body.callback_query) {
+            console.log('Callback query');
+        } else {
+            console.log('Mensajer normal');
+        }
+
+        // console.log(req.body.callback_query)
+        // console.log(req.body.message.chat)
+
+        /*const { message } = req.body
         
         const chatId = message.chat.id
         let answer
@@ -55,11 +87,15 @@ const handleMessage = async(req, res) => {
             isStartCommand(message.text) ? answer = "Bienvenido!" : answer = "Hola"
 
         }
-        
+        */
     
-        sendMessage(chatId, answer)
+        /* sendMessage(chatId, answer)
         .then(result => console.log("Mensaje enviado"))
-        .catch(error => console.log("Algo salío mal"))
+        .catch(error => console.log("Algo salío mal"))*/
+
+        /* sendMessageWithButton(chatId, answer)
+        .then(result => console.log("Mensaje enviado"))
+        .catch(error => console.log("Algo salío mal")) */
         
         res.send("Hello World")
 
