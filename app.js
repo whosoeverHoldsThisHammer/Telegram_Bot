@@ -11,10 +11,6 @@ const app = express()
 
 const store = new session.MemoryStore()
 
-app.use(cors());
-app.use(express.json())
-app.use(routerMaster)
-
 app.use(session({
     store: store,
     secret: "super secreto",
@@ -22,6 +18,11 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
 }))
+
+app.use(cors());
+app.use(express.json())
+app.use(routerMaster)
+
 
 const PORT = process.env.PORT
 

@@ -59,9 +59,9 @@ const updateMessage = (chatId, messageId)=> {
 
 }
 
-const handleMessage = async(req, res) => {
+const handleMessage = async(req, res, next) => {
     try {
-        //console.log(req.body)
+        console.log(req.session.id)
 
         let chatId
 
