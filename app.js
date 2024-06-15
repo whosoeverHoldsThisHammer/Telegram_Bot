@@ -15,8 +15,8 @@ app.use(session({
     store: store,
     secret: "super secreto",
     cookie: { maxAge: 50000 },
-    resave: false,
-    saveUninitialized: false,
+    resave: true,
+    saveUninitialized: true,
 }))
 
 app.use(cors());

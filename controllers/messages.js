@@ -59,11 +59,30 @@ const updateMessage = (chatId, messageId)=> {
 
 }
 
+let user_sessions = {}
+
 const handleMessage = async(req, res, next) => {
     try {
+        console.log(req.session)
+
+        // let user_id = req.body.message.from.id
         
-        req.session.user = "Test"
-        console.log(req.session.id)
+        // console.log(user_sessions[user_id])
+
+        /* if(user_sessions[user_id]){
+            console.log("No definido")
+            user_sessions[user_id] = req.session.id
+        }*/
+
+        // user_sessions[user_id] = session
+        // console.log(req.session.user)
+        // req.session.user = "Test"
+        // console.log(user_sessions)
+
+        // console.log(req.body.message.from)
+        // console.log(req.body.message.from.id)
+        // console.log(user_sessions)
+        
 
         let chatId
 
@@ -75,13 +94,15 @@ const handleMessage = async(req, res, next) => {
             let messageId = message.message_id
             let feedback = req.body.callback_query.data
             
-            console.log("Chat id: " + chatId)
-            console.log("Calificación: " + feedback)
-            console.log("Message id: " + messageId)
+            // console.log("Chat id: " + chatId)
+            // console.log("Calificación: " + feedback)
+            // console.log("Message id: " + messageId)
 
             let answer = "Gracias por el feedback"
 
             updateMessage(chatId, messageId)
+            .then(result => console.log("Mensaje actualizado"))
+            .catch(error => console.log("Algo salío mal"))
 
             sendMessage(chatId, answer)
             .then(result => console.log("Mensaje enviado"))
