@@ -59,30 +59,40 @@ const updateMessage = (chatId, messageId)=> {
 
 }
 
-let user_sessions = {}
+
+const storeMessage = (msg)=> {
+
+    let { chat, message_id, from, date, text } = msg
+
+    /* console.log("chat id", chat.id)
+    console.log("message id", message_id)
+    console.log("user_id", from.id)
+    console.log(from.is_bot === false ? "human" : "aiMessage")
+    console.log("fecha", new Date(date * 1000))
+    console.log("text", text)
+    */
+
+    const url = "http://localhost:3000/conversations"
+
+    const data = { 
+        chat_id: chat.id,
+        message_id: message_id,
+        user_id: from.id,
+        role: from.is_bot === false ? "human" : "aiMessage",
+        date: new Date(date * 1000),
+        content: text
+    }
+
+    axios.post(url, data)
+    .then(result => console.log(result))
+    .catch(error => console.log(error))
+    
+}
 
 const handleMessage = async(req, res, next) => {
     try {
-        console.log(req.session)
 
-        // let user_id = req.body.message.from.id
-        
-        // console.log(user_sessions[user_id])
-
-        /* if(user_sessions[user_id]){
-            console.log("No definido")
-            user_sessions[user_id] = req.session.id
-        }*/
-
-        // user_sessions[user_id] = session
-        // console.log(req.session.user)
-        // req.session.user = "Test"
-        // console.log(user_sessions)
-
-        // console.log(req.body.message.from)
-        // console.log(req.body.message.from.id)
-        // console.log(user_sessions)
-        
+        // console.log(req.body)
 
         let chatId
 
@@ -92,7 +102,7 @@ const handleMessage = async(req, res, next) => {
 
             let chatId = message.chat.id
             let messageId = message.message_id
-            let feedback = req.body.callback_query.data
+            // let feedback = req.body.callback_query.data
             
             // console.log("Chat id: " + chatId)
             // console.log("Calificación: " + feedback)
@@ -149,6 +159,8 @@ const handleMessage = async(req, res, next) => {
                     .then(result => console.log("Mensaje enviado"))
                     .catch(error => console.log("Algo salío mal"))
 
+
+                    storeMessage(req.body.message)
                 }  
     
             }
