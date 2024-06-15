@@ -64,14 +64,6 @@ const storeMessage = (msg)=> {
 
     let { chat, message_id, from, date, text } = msg
 
-    /* console.log("chat id", chat.id)
-    console.log("message id", message_id)
-    console.log("user_id", from.id)
-    console.log(from.is_bot === false ? "human" : "aiMessage")
-    console.log("fecha", new Date(date * 1000))
-    console.log("text", text)
-    */
-
     const url = "http://localhost:3000/conversations"
 
     const data = { 
@@ -80,7 +72,8 @@ const storeMessage = (msg)=> {
         user_id: from.id,
         role: from.is_bot === false ? "human" : "aiMessage",
         date: new Date(date * 1000),
-        content: text
+        content: text,
+        context: "Telegram"
     }
 
     axios.post(url, data)
@@ -89,10 +82,26 @@ const storeMessage = (msg)=> {
     
 }
 
+
+const getAnswer = () => {
+
+    // TODO
+    // Obtener el content del mensaje
+
+    const url = "http://localhost:3001/test"
+
+    const data = {
+        role: "human",
+        content: "Cómo configuro un almacén?",
+        history: []
+    }
+
+    return axios.post(url, data)
+
+}
+
 const handleMessage = async(req, res, next) => {
     try {
-
-        // console.log(req.body)
 
         let chatId
 
@@ -153,12 +162,21 @@ const handleMessage = async(req, res, next) => {
                     .catch(error => console.log("Algo salío mal"))
 
                 } else {
-                    answer = "Respuesta generada por la IA"
+                    // answer = "Respuesta generada por la IA"
 
-                    sendMessageWithButton(chatId, answer)
-                    .then(result => console.log("Mensaje enviado"))
-                    .catch(error => console.log("Algo salío mal"))
+                    getAnswer()
+                    .then(result => {
+                        answer = result.data.answer
 
+                        sendMessageWithButton(chatId, answer)
+                        .then(result => console.log("Mensaje enviado"))
+                        .catch(error => {
+                            console.log("Algo salío mal")
+                            console.log(error)
+                        })
+
+                    })
+                    .catch(error => console.log(error))
 
                     storeMessage(req.body.message)
                 }  
