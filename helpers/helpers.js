@@ -33,7 +33,7 @@ const sendMessageWithButton = (chatId, message) => {
             [
                 { "text": "👎🏻", "callback_data": "Negativa" },
                 { "text": "👍🏻", "callback_data": "Positiva" }
-                
+
             ]
         ]
       }
