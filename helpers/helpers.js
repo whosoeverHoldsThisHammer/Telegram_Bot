@@ -4,6 +4,7 @@ dotenv.config();
 
 const BASE_URL = `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}`
 
+
 const sendMessage = (chatId, message) => {
     
     const url = `${BASE_URL}/sendMessage`
@@ -30,8 +31,9 @@ const sendMessageWithButton = (chatId, message) => {
       reply_markup: {
         'inline_keyboard': [
             [
-                { "text": "👍🏻", "callback_data": "Positiva" },
-                { "text": "👎🏻", "callback_data": "Negativa" }
+                { "text": "👎🏻", "callback_data": "Negativa" },
+                { "text": "👍🏻", "callback_data": "Positiva" }
+
             ]
         ]
       }
@@ -97,5 +99,47 @@ const getAnswer = () => {
 
 }
 
+const isCallBackQuery = (req) => {
+    return req.body.callback_query !== undefined
+}
 
-export { sendMessage, sendMessageWithButton, updateMessage, storeMessage, getAnswer }
+const isNotSupportedMessage = (req) => {
+    const { message } = req.body
+
+    return message.photo || message.voice || message.document || message.poll
+}
+
+const getNotSupportedAnswer = (req) => {
+    
+    const { message } = req.body
+    
+    if(message.photo){
+            
+        return "Lo siento. No estoy preparado para interpretar imágenes.\n Por favor, cargá un ticket en Jira."
+
+    } else if(message.voice){
+        
+        return "Lo siento. No estoy preparado para interpretar audios.\n Por favor, cargá un ticket en Jira."
+
+    } else if(message.document){
+        
+        return "Lo siento. No estoy preparado para interpretar documentos.\n Por favor, cargá un ticket en Jira."
+
+    } else if (message.poll){
+        
+        return "Lo siento. No estoy preparado para responder encuestas.\n ¿Qué querías preguntarme?."
+
+    }
+}
+
+
+export { 
+    sendMessage,
+    sendMessageWithButton,
+    updateMessage,
+    storeMessage,
+    getAnswer,
+    isCallBackQuery,
+    isNotSupportedMessage,
+    getNotSupportedAnswer
+}

@@ -1,24 +1,16 @@
-import { sendMessage, sendMessageWithButton, updateMessage, storeMessage, getAnswer } from '../helpers/helpers.js'
+import { sendMessage, sendMessageWithButton, updateMessage, storeMessage, getAnswer, isCallBackQuery, isNotSupportedMessage, getNotSupportedAnswer } from '../helpers/helpers.js'
 import { isStartCommand } from '../utils/regex.js';
 
 
 const handleMessage = async(req, res, next) => {
     try {
+        
+        if(isCallBackQuery(req)){
 
-        let chatId
-
-        if (req.body.callback_query) {
-            
             const { message } = req.body.callback_query
 
             let chatId = message.chat.id
             let messageId = message.message_id
-            // let feedback = req.body.callback_query.data
-            
-            // console.log("Chat id: " + chatId)
-            // console.log("Calificación: " + feedback)
-            // console.log("Message id: " + messageId)
-
             let answer = "Gracias por el feedback"
 
             updateMessage(chatId, messageId)
@@ -29,67 +21,55 @@ const handleMessage = async(req, res, next) => {
             .then(result => console.log("Mensaje enviado"))
             .catch(error => console.log("Algo salío mal"))
 
-        } else {
+        }
+
+        if(isNotSupportedMessage(req)){
+
             const { message } = req.body
+            let chatId = message.chat.id
+            let answer = getNotSupportedAnswer(req)
 
-            chatId = message.chat.id
-            let answer
+            sendMessage(chatId, answer)
+            .then(result => console.log("Mensaje enviado"))
+            .catch(error => console.log("Algo salío mal"))
 
-            if(message.photo){
-            
-                answer = "Lo siento. No estoy preparado para interpretar imágenes.\n Por favor, cargá un ticket en Jira."
-    
-            } else if(message.voice){
-                
-                answer = "Lo siento. No estoy preparado para interpretar audios.\n Por favor, cargá un ticket en Jira."
-    
-            } else if(message.document){
-                
-                answer = "Lo siento. No estoy preparado para interpretar documentos.\n Por favor, cargá un ticket en Jira."
-    
-            } else if (message.poll){
-                
-                answer = "Lo siento. No estoy preparado para responder encuestas.\n ¿Qué querías preguntarme?."
-    
+        } else {
+
+            const { message } = req.body
+            let chatId = message.chat.id
+
+            if(isStartCommand(message.text)){
+                let answer = "Bienvenido!"
+
+                sendMessage(chatId, answer)
+                .then(result => console.log("Mensaje enviado"))
+                .catch(error => console.log("Algo salío mal"))
+
             } else {
-    
-                // answer = "Hola, en qué puedo ayudarte?" // Reemplazar por llamada a servicio integrador o LLM
-                // answer = "Todavía no puedo contestarte preguntas de la base de conocimiento \n\n [Te mando un pikachu](https://www.destructoid.com/wp-content/uploads/2020/12/473652-pika.jpg)"
-    
-                if(isStartCommand(message.text)){
-                    answer = "Bienvenido!"
+                let answer = "Respuesta generada por la IA"
 
-                    sendMessage(chatId, answer)
+                sendMessageWithButton(chatId, answer)
                     .then(result => console.log("Mensaje enviado"))
-                    .catch(error => console.log("Algo salío mal"))
+                    .catch(error => {
+                        console.log("Algo salío mal")
+                        console.log(error)
+                })
 
-                } else {
-                    answer = "Respuesta generada por la IA"
+                /* getAnswer()
+                .then(result => {
+                    answer = result.data.answer
 
                     sendMessageWithButton(chatId, answer)
-                        .then(result => console.log("Mensaje enviado"))
-                        .catch(error => {
-                            console.log("Algo salío mal")
-                            console.log(error)
+                    .then(result => console.log("Mensaje enviado"))
+                    .catch(error => {
+                        console.log("Algo salío mal")
+                        console.log(error)
                     })
 
-                    /* getAnswer()
-                    .then(result => {
-                        answer = result.data.answer
+                })
+                .catch(error => console.log(error))*/
 
-                        sendMessageWithButton(chatId, answer)
-                        .then(result => console.log("Mensaje enviado"))
-                        .catch(error => {
-                            console.log("Algo salío mal")
-                            console.log(error)
-                        })
-
-                    })
-                    .catch(error => console.log(error))*/
-
-                    // storeMessage(req.body.message)
-                }  
-    
+                // storeMessage(req.body.message)
             }
 
         }
