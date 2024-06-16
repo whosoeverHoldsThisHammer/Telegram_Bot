@@ -1,17 +1,18 @@
-import { sendMessage, sendMessageWithButton, updateMessage, storeMessage, getAnswer, isCallBackQuery, isNotSupportedMessage } from '../helpers/helpers.js'
+import { sendMessage, sendMessageWithButton, updateMessage, storeMessage, getAnswer, isCallBackQuery, isNotSupportedMessage, getNotSupportedAnswer } from '../helpers/helpers.js'
 import { isStartCommand } from '../utils/regex.js';
 
 
 
 const handleMessage = async(req, res, next) => {
     try {
-
-        let chatId
+        
+        console.log(req)
 
         if(isCallBackQuery(req)){
 
             const { message } = req.body.callback_query
 
+            let chatId = message.chat.id
             let messageId = message.message_id
             let answer = "Gracias por el feedback"
 
@@ -27,14 +28,29 @@ const handleMessage = async(req, res, next) => {
 
         if(isNotSupportedMessage(req)){
 
-            console.log("Tipo de mensaje no soportado")
-
+            // console.log("Tipo de mensaje no soportado")
             const { message } = req.body
+            let chatId = message.chat.id
+            let answer = getNotSupportedAnswer(req)
 
-            chatId = message.chat.id
-
+            sendMessage(chatId, answer)
+            .then(result => console.log("Mensaje enviado"))
+            .catch(error => console.log("Algo salío mal"))
 
         } else {
+
+            const { message } = req.body
+            let chatId = message.chat.id
+
+            if(isStartCommand(message.text)){
+                let answer = "Bienvenido!"
+                console.log(chatId)
+
+                sendMessage(chatId, answer)
+                .then(result => console.log("Mensaje enviado"))
+                .catch(error => console.log("Algo salío mal"))
+
+            }
 
         }
 
