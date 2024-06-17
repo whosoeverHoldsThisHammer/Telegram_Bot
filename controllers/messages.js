@@ -1,4 +1,14 @@
-import { sendMessage, sendMessageWithButton, updateMessage, storeMessage, getAnswer, isCallBackQuery, isNotSupportedMessage, getNotSupportedAnswer } from '../helpers/helpers.js'
+import { 
+    sendMessage,
+    sendMessageWithButton,
+    updateMessage,
+    storeMessage,
+    getAnswer,
+    isCallBackQuery,
+    isNotSupportedMessage,
+    getNotSupportedAnswer,
+    getSession
+} from '../helpers/helpers.js'
 import { isStartCommand } from '../utils/regex.js';
 
 
@@ -37,6 +47,45 @@ const handleMessage = async(req, res, next) => {
 
             const { message } = req.body
             let chatId = message.chat.id
+
+            let session
+            
+            getSession(chatId)
+            .then(result => {
+                session = result.data
+                // console.log(session)
+
+                // Si no existe la sesión, debe crearla
+                // PUT: "http://localhost:3000/ -> Pasarle el chat id en el body
+                if(session == null){
+
+
+                } else {
+                    // Si la sesión está expirada, debe actualizar la sesión
+                    // PATCH: "http://localhost:3000/${chatId}"
+                    
+                    const MAX_MINUTES = 30
+
+                    let last = (parseInt(session.last_active))
+                    let current = Date.now()
+
+                    // console.log(typeof(last))
+                    // console.log(typeof(current))
+
+                    const diff = Math.abs(current - last)
+                    const minutes = diff / (1000 * 60)
+
+                    // console.log(minutes)
+
+                    if(minutes > MAX_MINUTES){
+                        console.log("La sesión está expirada. Hay que crear otra sesión")
+                    }
+                }
+
+                
+            })
+            .catch(error => console.log(error))
+            
 
             if(isStartCommand(message.text)){
                 let answer = "Bienvenido!"

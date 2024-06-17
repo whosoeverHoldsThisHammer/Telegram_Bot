@@ -132,6 +132,16 @@ const getNotSupportedAnswer = (req) => {
     }
 }
 
+const getSession = (chatId)=> {
+    // console.log(chatId)
+
+    // Reemplazar por chat id
+    // const url = `http://localhost:3000/${chatId}`
+    const url = "http://localhost:3000/1"
+
+    return axios.get(url)
+
+}
 
 export { 
     sendMessage,
@@ -141,5 +151,6 @@ export {
     getAnswer,
     isCallBackQuery,
     isNotSupportedMessage,
-    getNotSupportedAnswer
+    getNotSupportedAnswer,
+    getSession
 }
