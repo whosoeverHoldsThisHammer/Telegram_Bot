@@ -11,37 +11,38 @@ Proyecto con backend para contestar de forma automática a las consultas de los 
 
 ## Descargar Ngrok
 
-Ngrok - https://ngrok.com/
+- Ngrok - https://ngrok.com/
 
 
 ## Ejecutar el proyecto
 
 1. Levantar un servidor local
 
-```
-
-npm start
-
-```
+    ```
+    npm start
+    ```
 
 2. Ir al directorio donde esté ngrok.exe
 3. Abrir la terminal
-4. Crear un tunel a nuestro localhost
+4. Crear un tunel a un puerto localhost
 
-```
-
-ngrok http http://localhost:4040
-
-```
+    ```
+    ngrok http http://localhost:4040
+    ```
 
 5. Copiar la URL que generó Ngrok
 6. Reemplazar la URL en el archivo webhook.js
 7. Establecer el webhook para que el bot escuche los mensajes que envían los usuarios
 
-```
+    ```
+    node webhook.js
+    ```
+8. Levantar servidor local con una API con la persistencia
 
-node webhook.js
+- Persistencia - https://github.com/whosoeverHoldsThisHammer/API_Persistencia_Bot
 
-```
+9. Levantar servidor local con una API con el LLM
 
-8. Escribir un mensaje al bot 🤖🚀
+- LLM - https://github.com/whosoeverHoldsThisHammer/API_Chatbot_LLM
+
+10. Escribir un mensaje al bot 🤖🚀
