@@ -47,19 +47,21 @@ const handleMessage = async(req, res, next) => {
             .catch(error => console.log("Algo salío mal"))
 
         } else {
-
+            
             const { message } = req.body
             let chatId = message.chat.id
+
+            console.log("chat_id:", chatId)
 
             let session
             
             getSession(chatId)
             .then(result => {
                 session = result.data
-                // console.log(session)
    
                 if(session == null){
                     // Si no existe la sesión, debe crearla
+                    console.log("La sesión no existe y tiene que crearla")
                     createSession(chatId)
 
                 } else {

@@ -135,9 +135,9 @@ const getNotSupportedAnswer = (req) => {
 const getSession = (chatId) => {
     // console.log(chatId)
 
-    // Reemplazar por chat id
-    // const url = `http://localhost:3000/${chatId}`
-    const url = "http://localhost:3000/777"
+    // Le pasa el chat id
+    const url = `http://localhost:3000/${chatId}`
+    // const url = "http://localhost:3000/777"
 
     return axios.get(url)
 
@@ -146,9 +146,16 @@ const getSession = (chatId) => {
 const createSession = (chatId) => {
     // console.log(chatId)
 
-    // Reemplazar por chat id
-    const data = {
+    // Mock
+    /* const data = {
         chat_id: "555"
+    }*/
+
+    const url = "http://localhost:3000"
+
+    // Le pasa el chat id
+    const data = {
+        chat_id: chatId
     }
 
     return axios.post(url, data)
@@ -157,10 +164,10 @@ const createSession = (chatId) => {
 const updateSession = (chatId) => {
     // console.log(chatId)
     
-    // Reemplazar por chat id
-    // const url = `http://localhost:3000/updateSession/${chatId}`
+    // Le pasa el chat id
+    const url = `http://localhost:3000/updateSession/${chatId}`
 
-    const url = "http://localhost:3000/updateSession/777"
+    // const url = "http://localhost:3000/updateSession/777"
 
     return axios.patch(url)
 
@@ -170,9 +177,9 @@ const updateSession = (chatId) => {
 const updateActivity = (chatId) => {
     // console.log(chatId)
     
-    // Reemplazar por chat id
-    // const url = `http://localhost:3000/updateActivity/${chatId}`
-    const url = "http://localhost:3000/updateActivity/777"
+    // Le pasa el chat id
+    const url = `http://localhost:3000/updateActivity/${chatId}`
+    //const url = "http://localhost:3000/updateActivity/777"
 
     return axios.patch(url)
 }
