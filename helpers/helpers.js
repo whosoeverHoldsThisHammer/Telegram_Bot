@@ -183,6 +183,39 @@ const updateActivity = (chatId) => {
     return axios.patch(url)
 }
 
+const saveMessage = (message) => {
+    const chatId = message.chat_id
+    const sessionId = message.sessionId
+
+    const url = `http://localhost:3000/conversations/${chatId}/${sessionId}/saveMessage`
+
+    const data = {
+        role: message.role,
+        message_id: message.message_id,
+        content: message.content,
+        date: message.date
+    }
+
+    return axios.patch(url, data)
+}
+
+const saveFeedback = (message) => {
+    const chatId = message.chat_id
+    const sessionId = message.sessionId
+
+    // console.log("Feedback:", message)
+
+    const url = `http://localhost:3000/conversations/${chatId}/${sessionId}/saveFeedback`
+
+    const data = {
+        message_id: message.message_id,
+        feedback: message.feedback
+    }
+
+    return axios.patch(url, data)
+
+}
+
 export { 
     sendMessage,
     sendMessageWithButton,
@@ -195,5 +228,7 @@ export {
     getSession,
     createSession,
     updateActivity,
-    updateSession
+    updateSession,
+    saveMessage,
+    saveFeedback
 }
