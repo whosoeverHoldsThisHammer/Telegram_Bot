@@ -132,15 +132,49 @@ const getNotSupportedAnswer = (req) => {
     }
 }
 
-const getSession = (chatId)=> {
+const getSession = (chatId) => {
     // console.log(chatId)
 
     // Reemplazar por chat id
     // const url = `http://localhost:3000/${chatId}`
-    const url = "http://localhost:3000/1"
+    const url = "http://localhost:3000/777"
 
     return axios.get(url)
 
+}
+
+const createSession = (chatId) => {
+    // console.log(chatId)
+
+    // Reemplazar por chat id
+    const data = {
+        chat_id: "555"
+    }
+
+    return axios.post(url, data)
+}
+
+const updateSession = (chatId) => {
+    // console.log(chatId)
+    
+    // Reemplazar por chat id
+    // const url = `http://localhost:3000/updateSession/${chatId}`
+
+    const url = "http://localhost:3000/updateSession/777"
+
+    return axios.patch(url)
+
+}
+
+
+const updateActivity = (chatId) => {
+    // console.log(chatId)
+    
+    // Reemplazar por chat id
+    // const url = `http://localhost:3000/updateActivity/${chatId}`
+    const url = "http://localhost:3000/updateActivity/777"
+
+    return axios.patch(url)
 }
 
 export { 
@@ -152,5 +186,8 @@ export {
     isCallBackQuery,
     isNotSupportedMessage,
     getNotSupportedAnswer,
-    getSession
+    getSession,
+    createSession,
+    updateActivity,
+    updateSession
 }

@@ -7,7 +7,10 @@ import {
     isCallBackQuery,
     isNotSupportedMessage,
     getNotSupportedAnswer,
-    getSession
+    getSession,
+    createSession,
+    updateSession,
+    updateActivity
 } from '../helpers/helpers.js'
 import { isStartCommand } from '../utils/regex.js';
 
@@ -54,15 +57,13 @@ const handleMessage = async(req, res, next) => {
             .then(result => {
                 session = result.data
                 // console.log(session)
-
-                // Si no existe la sesión, debe crearla
-                // PUT: "http://localhost:3000/ -> Pasarle el chat id en el body
+   
                 if(session == null){
-
+                    // Si no existe la sesión, debe crearla
+                    createSession(chatId)
 
                 } else {
                     // Si la sesión está expirada, debe actualizar la sesión
-                    // PATCH: "http://localhost:3000/${chatId}"
                     
                     const MAX_MINUTES = 30
 
@@ -79,6 +80,13 @@ const handleMessage = async(req, res, next) => {
 
                     if(minutes > MAX_MINUTES){
                         console.log("La sesión está expirada. Hay que crear otra sesión")
+                        updateSession(chatId)
+
+                    } else {
+                        // Si la sesión no está expirada, hay que actualizar la actividad
+                        console.log("La sesión no expiró. Hay que actualizar la útlima actividad")
+                        updateActivity(chatId)
+
                     }
                 }
 
