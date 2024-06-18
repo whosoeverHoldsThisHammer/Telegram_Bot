@@ -187,29 +187,33 @@ const handleMessage = async(req, res, next) => {
                         date: message.date
                     }
 
-                    await saveMessage(receivedMessage)
-
-                    sendMessage(chatId, answer)
-                    .then(result => { 
-                        const response = result.data.result
-                        console.log("Mensaje enviado")
-
-                        const sentMessage = {
-                            chat_id: chatId,
-                            session_id: session.data.session_id,
-                            role: "ai",
-                            message_id: response.message_id,
-                            content: response.text,
-                            date: response.date
-                        }
-
-                        saveMessage(sentMessage)
-                        .then(result => console.log("Mensaje guardado!"))
-                        .catch(error => console.log(error))
-
+                    saveMessage(receivedMessage)
+                    .then(()=> {
+                        sendMessage(chatId, answer)
+                        .then(result => { 
+                            const response = result.data.result
+                            console.log("Mensaje enviado")
+    
+                            const sentMessage = {
+                                chat_id: chatId,
+                                session_id: session.data.session_id,
+                                role: "ai",
+                                message_id: response.message_id,
+                                content: response.text,
+                                date: response.date
+                            }
+    
+                            saveMessage(sentMessage)
+                            .then(result => console.log("Mensaje guardado!"))
+                            .catch(error => console.log(error))
+    
+                        })
+                        .catch(error => {
+                            console.log("Algo salío mal")
+                            console.log(error)
+                        })
                     })
-                    .catch(error => console.log("Algo salío mal"))
-
+                    
                 } else {
                     let answer = "Respuesta generada por la IA"
 
@@ -223,14 +227,20 @@ const handleMessage = async(req, res, next) => {
                         date: message.date
                     }
 
-                    await saveMessage(receivedMessage)
+                    saveMessage(receivedMessage)
+                    .then(()=> {
+                        return getAnswer(message.text)
+                    })
+                    .then((result)=> {
+                        // let answer = result.data.answer
+                        // console.log("Respuesta LLM:", result.data.answer)
+                        answer = result.data.answer
 
-                    sendMessageWithButton(chatId, answer)
+                        sendMessageWithButton(chatId, answer)
                         .then(result => { 
                             console.log("Mensaje enviado")
                         
                             const response = result.data.result
-                            console.log("Mensaje enviado")
 
                             const sentMessage = {
                                 chat_id: chatId,
@@ -249,25 +259,10 @@ const handleMessage = async(req, res, next) => {
                         .catch(error => {
                             console.log("Algo salío mal")
                             console.log(error)
-                    })
-
-                    /* getAnswer()
-                    .then(result => {
-                        answer = result.data.answer
-
-                        sendMessageWithButton(chatId, answer)
-                        .then(result => console.log("Mensaje enviado"))
-                        .catch(error => {
-                            console.log("Algo salío mal")
-                            console.log(error)
                         })
-
                     })
-                    .catch(error => console.log(error))*/
 
-                    // storeMessage(req.body.message)
-
-                }
+                    }
             }
 
         }

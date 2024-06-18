@@ -82,16 +82,13 @@ const storeMessage = (msg)=> {
 }
 
 
-const getAnswer = () => {
-
-    // TODO
-    // Obtener el content del mensaje
+const getAnswer = (message) => {
 
     const url = "http://localhost:3001/test"
 
     const data = {
         role: "human",
-        content: "Cómo configuro un almacén?",
+        content: message,
         history: []
     }
 
