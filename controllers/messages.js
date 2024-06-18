@@ -32,11 +32,11 @@ const handleMessage = async(req, res, next) => {
             // Si no existe la sesión, debe crearla
             console.log("La sesión no existe. Hay que crear una sesión y una conversación")
 
-            // Crea la conversación
+            // Crea la sesión
             createSession(chatId)
 
-            // Crea la sesión
-            await createConversation(chatId, req.body.message.from.id, session.data.session_id)
+            // Crea la conversacion
+            await createConversation(chatId, userId, session.data.session_id)
 
         } else {
             // Si la sesión está expirada, debe actualizar la sesión
@@ -54,11 +54,7 @@ const handleMessage = async(req, res, next) => {
                 session = await updateSession(chatId)
 
                 // Crea la nueva conversación
-                // console.log("Chat id:", chatId)
-                // console.log("User id:", userId)
-                // console.log("Nueva session:", session.data.session_id)
-
-                await createConversation(chatId, req.body.message.from.id, session.data.session_id)
+                await createConversation(chatId, userId, session.data.session_id)
 
             } else {
                 // Si la sesión no está expirada, hay que actualizar la actividad
@@ -85,11 +81,11 @@ const handleMessage = async(req, res, next) => {
             // Guarda los cambios en db
             sendMessage(chatId, answer)
             .then(result => { 
-                let res = result.data.result
+                const res = result.data.result
 
                 console.log("Mensaje enviado")
 
-                let sentMessage = {
+                const sentMessage = {
                     chat_id: chatId,
                     session_id: session.data.session_id,
                     role: "ai",
@@ -98,7 +94,7 @@ const handleMessage = async(req, res, next) => {
                     date: res.date
                 }
 
-                let feedback = {
+                const feedback = {
                     chat_id: chatId,
                     session_id: session.data.session_id,
                     message_id: messageId, // El id del mensaje al que se le está dando una clasificación
@@ -108,11 +104,11 @@ const handleMessage = async(req, res, next) => {
                 // 1º Guardar nuevo mensaje
                 
                 // Descomentar
-                // saveMessage(sentMessage)
+                // await saveMessage(sentMessage)
 
                 // 2º Actualizar feedback de la respuesta de la IA
                 // Descomentar
-                // saveFeedback(feedback)
+                // await saveFeedback(feedback)
 
             })
             .catch(error => console.log(error.message))
@@ -127,9 +123,40 @@ const handleMessage = async(req, res, next) => {
                 const { message } = req.body
                 let chatId = message.chat.id
                 let answer = getNotSupportedAnswer(req)
-    
+
+                // Primero hay que guardar el mensaje entrante
+                const receivedMessage = {
+                    chat_id: chatId,
+                    session_id: session.data.session_id,
+                    role: "human",
+                    message_id: message.message_id,
+                    content: "Mensaje en formato no soportado",
+                    date: message.date
+                }
+                // console.log(receivedMessage)
+                await saveMessage(receivedMessage)
+
+                // Después hay que mandar el mensaje enviado
                 sendMessage(chatId, answer)
-                .then(result => console.log("Mensaje enviado"))
+                .then(result => {
+                    console.log("Mensaje enviado")
+                    const response = result.data.result
+
+                    const sentMessage = {
+                        chat_id: chatId,
+                        session_id: session.data.session_id,
+                        role: "ai",
+                        message_id: response.message_id,
+                        content: response.text,
+                        date: response.date
+                    }
+
+                    // console.log(sentMessage)
+                    saveMessage(sentMessage)
+                    .then(result => console.log("Mensaje guardado!"))
+                    .catch(error => console.log(error))
+
+                })
                 .catch(error => console.log("Algo salío mal"))
     
             } else {

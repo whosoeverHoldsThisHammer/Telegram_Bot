@@ -185,8 +185,9 @@ const updateActivity = (chatId) => {
 
 const saveMessage = (message) => {
     const chatId = message.chat_id
-    const sessionId = message.sessionId
+    const sessionId = message.session_id
 
+    // http://localhost:3000/conversations/7427897706/55b45042-6717-4307-9834-ad78752377f0/saveMessage
     const url = `http://localhost:3000/conversations/${chatId}/${sessionId}/saveMessage`
 
     const data = {
