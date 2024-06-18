@@ -216,6 +216,20 @@ const saveFeedback = (message) => {
 
 }
 
+const createConversation = (chatId, userId, sessionId)=> {
+    
+    const url = "http://localhost:3000/conversations"
+
+    const data = {
+        chat_id: chatId,
+        user_id: userId,
+        session_id: sessionId
+    }
+
+    return axios.post(url, data)
+
+}
+
 export { 
     sendMessage,
     sendMessageWithButton,
@@ -230,5 +244,6 @@ export {
     updateActivity,
     updateSession,
     saveMessage,
-    saveFeedback
+    saveFeedback,
+    createConversation
 }

@@ -12,7 +12,9 @@ import {
     updateSession,
     updateActivity,
     saveMessage,
-    saveFeedback
+    saveFeedback,
+    createConversation
+
 } from '../helpers/helpers.js'
 import { isStartCommand } from '../utils/regex.js';
 
@@ -21,13 +23,21 @@ const handleMessage = async(req, res, next) => {
     try {
         
         const getChatId = req => isCallBackQuery(req) ? req.body.callback_query.message.chat.id : req.body.message.chat.id
+        const getUserId = req => isCallBackQuery(req) ? req.body.callback_query.from.id : req.body.message.from.id
         const chatId = getChatId(req)
-        const session = await getSession(chatId)
+        const userId = getUserId(req)
+        let session = await getSession(chatId)
         
         if(session.data == null){
             // Si no existe la sesión, debe crearla
-            console.log("La sesión no existe y tiene que crearla")
+            console.log("La sesión no existe. Hay que crear una sesión y una conversación")
+
+            // Crea la conversación
             createSession(chatId)
+
+            // Crea la sesión
+            await createConversation(chatId, req.body.message.from.id, session.data.session_id)
+
         } else {
             // Si la sesión está expirada, debe actualizar la sesión
             const MAX_MINUTES = 30
@@ -37,10 +47,18 @@ const handleMessage = async(req, res, next) => {
             const diff = Math.abs(current - last)
             const minutes = diff / (1000 * 60)
 
-
             if(minutes > MAX_MINUTES){
-                console.log("La sesión está expirada. Hay que crear otra sesión")
-                updateSession(chatId)
+                console.log("La sesión está expirada. Hay que crear otra sesión y una nueva conversación")
+                
+                // Crea la nueva sesión
+                session = await updateSession(chatId)
+
+                // Crea la nueva conversación
+                // console.log("Chat id:", chatId)
+                // console.log("User id:", userId)
+                // console.log("Nueva session:", session.data.session_id)
+
+                await createConversation(chatId, req.body.message.from.id, session.data.session_id)
 
             } else {
                 // Si la sesión no está expirada, hay que actualizar la actividad
