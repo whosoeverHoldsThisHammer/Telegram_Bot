@@ -99,16 +99,27 @@ const handleMessage = async(req, res, next) => {
                     message_id: messageId, // El id del mensaje al que se le está dando una clasificación
                     feedback: rating
                 }
+
+                // console.log(feedback)
                 
-                // console.log(sentMessage)
                 // Guardar el mensaje enviado mensaje
                 saveMessage(sentMessage)
-                .then(result => console.log("Mensaje guardado!"))
+                .then(result => {
+                    console.log("Mensaje guardado!")                
+                })
+                .then(()=> {
+
+                    // 2º Actualizar feedback de la respuesta de la IA
+                    saveFeedback(feedback)
+                    .then(result => {
+                        console.log("Feedback guardado!")
+                    })
+                    .catch(error => console.log(error))
+
+                })
                 .catch(error => console.log(error))
 
-                // 2º Actualizar feedback de la respuesta de la IA
-                // Descomentar
-                // await saveFeedback(feedback)
+
 
             })
             .catch(error => console.log(error.message))

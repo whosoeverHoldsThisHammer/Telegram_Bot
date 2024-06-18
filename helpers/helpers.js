@@ -202,16 +202,19 @@ const saveMessage = (message) => {
 
 const saveFeedback = (message) => {
     const chatId = message.chat_id
-    const sessionId = message.sessionId
-
-    // console.log("Feedback:", message)
+    const sessionId = message.session_id
 
     const url = `http://localhost:3000/conversations/${chatId}/${sessionId}/saveFeedback`
+    
+    console.log(message.message_id)
+    console.log(message.feedback)
 
     const data = {
-        message_id: message.message_id,
+        message_id: `${message.message_id}`,
         feedback: message.feedback
     }
+
+    console.log(typeof(message.message_id))
 
     return axios.patch(url, data)
 
