@@ -71,7 +71,6 @@ const handleMessage = async(req, res, next) => {
 
             let messageId = message.message_id
             let answer = "Gracias por el feedback"
-            // console.log("Received message id:", message.message_id)
 
             // Borra los botones
             updateMessage(chatId, messageId)
@@ -101,10 +100,11 @@ const handleMessage = async(req, res, next) => {
                     feedback: rating
                 }
                 
-                // 1º Guardar nuevo mensaje
-                
-                // Descomentar
-                // await saveMessage(sentMessage)
+                // console.log(sentMessage)
+                // Guardar el mensaje enviado mensaje
+                saveMessage(sentMessage)
+                .then(result => console.log("Mensaje guardado!"))
+                .catch(error => console.log(error))
 
                 // 2º Actualizar feedback de la respuesta de la IA
                 // Descomentar
@@ -133,10 +133,10 @@ const handleMessage = async(req, res, next) => {
                     content: "Mensaje en formato no soportado",
                     date: message.date
                 }
-                // console.log(receivedMessage)
+
                 await saveMessage(receivedMessage)
 
-                // Después hay que mandar el mensaje enviado
+                // Después hay que guardar el mensaje enviado
                 sendMessage(chatId, answer)
                 .then(result => {
                     console.log("Mensaje enviado")
@@ -151,7 +151,6 @@ const handleMessage = async(req, res, next) => {
                         date: response.date
                     }
 
-                    // console.log(sentMessage)
                     saveMessage(sentMessage)
                     .then(result => console.log("Mensaje guardado!"))
                     .catch(error => console.log(error))
@@ -177,7 +176,6 @@ const handleMessage = async(req, res, next) => {
                         date: message.date
                     }
 
-                    //console.log(receivedMessage)
                     await saveMessage(receivedMessage)
 
                     sendMessage(chatId, answer)
@@ -204,8 +202,39 @@ const handleMessage = async(req, res, next) => {
                 } else {
                     let answer = "Respuesta generada por la IA"
 
+                    // Primero hay que guardar el mensaje entrante
+                    const receivedMessage = {
+                        chat_id: chatId,
+                        session_id: session.data.session_id,
+                        role: "human",
+                        message_id: message.message_id,
+                        content: message.text,
+                        date: message.date
+                    }
+
+                    await saveMessage(receivedMessage)
+
                     sendMessageWithButton(chatId, answer)
-                        .then(result => console.log("Mensaje enviado"))
+                        .then(result => { 
+                            console.log("Mensaje enviado")
+                        
+                            const response = result.data.result
+                            console.log("Mensaje enviado")
+
+                            const sentMessage = {
+                                chat_id: chatId,
+                                session_id: session.data.session_id,
+                                role: "ai",
+                                message_id: response.message_id,
+                                content: response.text,
+                                date: response.date
+                            }
+
+                            saveMessage(sentMessage)
+                            .then(result => console.log("Mensaje guardado!"))
+                            .catch(error => console.log(error))
+
+                        })
                         .catch(error => {
                             console.log("Algo salío mal")
                             console.log(error)
