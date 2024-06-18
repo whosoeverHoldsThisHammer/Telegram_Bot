@@ -167,8 +167,38 @@ const handleMessage = async(req, res, next) => {
                 if(isStartCommand(message.text)){
                     let answer = "Bienvenido!"
 
+                    // Primero hay que guardar el mensaje entrante
+                    const receivedMessage = {
+                        chat_id: chatId,
+                        session_id: session.data.session_id,
+                        role: "human",
+                        message_id: message.message_id,
+                        content: message.text,
+                        date: message.date
+                    }
+
+                    //console.log(receivedMessage)
+                    await saveMessage(receivedMessage)
+
                     sendMessage(chatId, answer)
-                    .then(result => console.log("Mensaje enviado"))
+                    .then(result => { 
+                        const response = result.data.result
+                        console.log("Mensaje enviado")
+
+                        const sentMessage = {
+                            chat_id: chatId,
+                            session_id: session.data.session_id,
+                            role: "ai",
+                            message_id: response.message_id,
+                            content: response.text,
+                            date: response.date
+                        }
+
+                        saveMessage(sentMessage)
+                        .then(result => console.log("Mensaje guardado!"))
+                        .catch(error => console.log(error))
+
+                    })
                     .catch(error => console.log("Algo salío mal"))
 
                 } else {
