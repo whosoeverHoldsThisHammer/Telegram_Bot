@@ -100,7 +100,7 @@ const getAnswer = () => {
 }
 
 const isCallBackQuery = (req) => {
-    return req.body.callback_query !== undefined
+    return req.body.callback_query
 }
 
 const isNotSupportedMessage = (req) => {
@@ -136,7 +136,7 @@ const getSession = (chatId) => {
     // console.log(chatId)
 
     // Le pasa el chat id
-    const url = `http://localhost:3000/${chatId}`
+    const url = `http://localhost:3000/sessions/${chatId}`
     // const url = "http://localhost:3000/777"
 
     return axios.get(url)
@@ -151,7 +151,7 @@ const createSession = (chatId) => {
         chat_id: "555"
     }*/
 
-    const url = "http://localhost:3000"
+    const url = "http://localhost:3000/sessions"
 
     // Le pasa el chat id
     const data = {
@@ -165,7 +165,7 @@ const updateSession = (chatId) => {
     // console.log(chatId)
     
     // Le pasa el chat id
-    const url = `http://localhost:3000/updateSession/${chatId}`
+    const url = `http://localhost:3000/sessions/updateSession/${chatId}`
 
     // const url = "http://localhost:3000/updateSession/777"
 
@@ -176,12 +176,62 @@ const updateSession = (chatId) => {
 
 const updateActivity = (chatId) => {
     // console.log(chatId)
-    
     // Le pasa el chat id
-    const url = `http://localhost:3000/updateActivity/${chatId}`
+    const url = `http://localhost:3000/sessions/updateActivity/${chatId}`
     //const url = "http://localhost:3000/updateActivity/777"
 
     return axios.patch(url)
+}
+
+const saveMessage = (message) => {
+    const chatId = message.chat_id
+    const sessionId = message.session_id
+
+    // http://localhost:3000/conversations/7427897706/55b45042-6717-4307-9834-ad78752377f0/saveMessage
+    const url = `http://localhost:3000/conversations/${chatId}/${sessionId}/saveMessage`
+
+    const data = {
+        role: message.role,
+        message_id: message.message_id,
+        content: message.content,
+        date: message.date
+    }
+
+    return axios.patch(url, data)
+}
+
+const saveFeedback = (message) => {
+    const chatId = message.chat_id
+    const sessionId = message.session_id
+
+    const url = `http://localhost:3000/conversations/${chatId}/${sessionId}/saveFeedback`
+    
+    console.log(message.message_id)
+    console.log(message.feedback)
+
+    const data = {
+        message_id: `${message.message_id}`,
+        feedback: message.feedback
+    }
+
+    console.log(typeof(message.message_id))
+
+    return axios.patch(url, data)
+
+}
+
+const createConversation = (chatId, userId, sessionId)=> {
+    
+    const url = "http://localhost:3000/conversations"
+
+    const data = {
+        chat_id: chatId,
+        user_id: userId,
+        session_id: sessionId
+    }
+
+    return axios.post(url, data)
+
 }
 
 export { 
@@ -196,5 +246,8 @@ export {
     getSession,
     createSession,
     updateActivity,
-    updateSession
+    updateSession,
+    saveMessage,
+    saveFeedback,
+    createConversation
 }
