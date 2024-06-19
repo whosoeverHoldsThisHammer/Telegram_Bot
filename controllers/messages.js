@@ -233,8 +233,8 @@ const handleMessage = async(req, res, next) => {
                         return getHistory(chatId, session.data.session_id)
                     })
                     .then((result)=> {
-                        console.log(result.data)
-                        return getAnswer(message.text)
+                        let history = result.data
+                        return getAnswer(message.text, result.data)
                     })
                     .then((result)=> {
                         // let answer = result.data.answer

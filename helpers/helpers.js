@@ -82,15 +82,21 @@ const storeMessage = (msg)=> {
 }
 
 
-const getAnswer = (message) => {
+const getAnswer = (message, history) => {
 
     const url = "http://localhost:3001/test"
+
+    /* const data = {
+        role: "human",
+        content: message,
+        history: []
+    }*/
 
     const data = {
         role: "human",
         content: message,
-        history: []
-    }
+        history: history
+    }   
 
     return axios.post(url, data)
 
