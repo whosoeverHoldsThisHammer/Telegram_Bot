@@ -82,18 +82,21 @@ const storeMessage = (msg)=> {
 }
 
 
-const getAnswer = () => {
-
-    // TODO
-    // Obtener el content del mensaje
+const getAnswer = (message, history) => {
 
     const url = "http://localhost:3001/test"
 
+    /* const data = {
+        role: "human",
+        content: message,
+        history: []
+    }*/
+
     const data = {
         role: "human",
-        content: "Cómo configuro un almacén?",
-        history: []
-    }
+        content: message,
+        history: history
+    }   
 
     return axios.post(url, data)
 
@@ -234,6 +237,17 @@ const createConversation = (chatId, userId, sessionId)=> {
 
 }
 
+const getHistory = (chatId, sessionId)=> {
+    console.log("chat_id:", chatId)
+    console.log("chat_id:", sessionId)
+
+    // `http://localhost:3000/conversations/${chatId}}/${sessionId}}/messages?limit=1`
+    const url = `http://localhost:3000/conversations/${chatId}/${sessionId}/messages`
+
+    return axios.get(url)
+
+}
+
 export { 
     sendMessage,
     sendMessageWithButton,
@@ -249,5 +263,6 @@ export {
     updateSession,
     saveMessage,
     saveFeedback,
-    createConversation
+    createConversation,
+    getHistory
 }
