@@ -231,6 +231,17 @@ const createConversation = (chatId, userId, sessionId)=> {
 
 }
 
+const getHistory = (chatId, sessionId)=> {
+    console.log("chat_id:", chatId)
+    console.log("chat_id:", sessionId)
+
+    // `http://localhost:3000/conversations/${chatId}}/${sessionId}}/messages?limit=1`
+    const url = `http://localhost:3000/conversations/${chatId}/${sessionId}/messages`
+
+    return axios.get(url)
+
+}
+
 export { 
     sendMessage,
     sendMessageWithButton,
@@ -246,5 +257,6 @@ export {
     updateSession,
     saveMessage,
     saveFeedback,
-    createConversation
+    createConversation,
+    getHistory
 }

@@ -13,7 +13,8 @@ import {
     updateActivity,
     saveMessage,
     saveFeedback,
-    createConversation
+    createConversation,
+    getHistory
 
 } from '../helpers/helpers.js'
 import { isStartCommand } from '../utils/regex.js';
@@ -229,6 +230,10 @@ const handleMessage = async(req, res, next) => {
 
                     saveMessage(receivedMessage)
                     .then(()=> {
+                        return getHistory(chatId, session.data.session_id)
+                    })
+                    .then((result)=> {
+                        console.log(result.data)
                         return getAnswer(message.text)
                     })
                     .then((result)=> {
