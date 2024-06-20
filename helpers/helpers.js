@@ -86,12 +86,6 @@ const getAnswer = (message, history) => {
 
     const url = "http://localhost:3001/test"
 
-    /* const data = {
-        role: "human",
-        content: message,
-        history: []
-    }*/
-
     const data = {
         role: "human",
         content: message,
@@ -140,7 +134,6 @@ const getSession = (chatId) => {
 
     // Le pasa el chat id
     const url = `http://localhost:3000/sessions/${chatId}`
-    // const url = "http://localhost:3000/777"
 
     return axios.get(url)
 
@@ -170,7 +163,6 @@ const updateSession = (chatId) => {
     // Le pasa el chat id
     const url = `http://localhost:3000/sessions/updateSession/${chatId}`
 
-    // const url = "http://localhost:3000/updateSession/777"
 
     return axios.patch(url)
 
@@ -179,9 +171,9 @@ const updateSession = (chatId) => {
 
 const updateActivity = (chatId) => {
     // console.log(chatId)
+    
     // Le pasa el chat id
     const url = `http://localhost:3000/sessions/updateActivity/${chatId}`
-    //const url = "http://localhost:3000/updateActivity/777"
 
     return axios.patch(url)
 }
@@ -190,7 +182,6 @@ const saveMessage = (message) => {
     const chatId = message.chat_id
     const sessionId = message.session_id
 
-    // http://localhost:3000/conversations/7427897706/55b45042-6717-4307-9834-ad78752377f0/saveMessage
     const url = `http://localhost:3000/conversations/${chatId}/${sessionId}/saveMessage`
 
     const data = {
@@ -205,19 +196,12 @@ const saveMessage = (message) => {
 
 const saveFeedback = (message) => {
     const chatId = message.chat_id
-    const sessionId = message.session_id
 
-    const url = `http://localhost:3000/conversations/${chatId}/${sessionId}/saveFeedback`
-    
-    console.log(message.message_id)
-    console.log(message.feedback)
+    const url = `http://localhost:3000/conversations/${chatId}/${message.message_id}/saveFeedback`
 
     const data = {
-        message_id: `${message.message_id}`,
         feedback: message.feedback
     }
-
-    console.log(typeof(message.message_id))
 
     return axios.patch(url, data)
 
@@ -239,7 +223,7 @@ const createConversation = (chatId, userId, sessionId)=> {
 
 const getHistory = (chatId, sessionId)=> {
     console.log("chat_id:", chatId)
-    console.log("chat_id:", sessionId)
+    console.log("session_id:", sessionId)
 
     // `http://localhost:3000/conversations/${chatId}}/${sessionId}}/messages?limit=1`
     const url = `http://localhost:3000/conversations/${chatId}/${sessionId}/messages`
