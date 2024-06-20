@@ -1,13 +1,33 @@
-const isEmoji = (message) => {
-    const pattern = /(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])/
-
-    return pattern.test(message)
-}
-
 const isStartCommand = (message) => {
     const pattern = /^\/start$/
 
     return pattern.test(message)
 }
 
-export { isEmoji, isStartCommand }
+const isGreetingMessage = (message) => {
+    const pattern = /^¡?Hola.+ayudarte\??$/
+
+    return pattern.test(message)
+}
+
+const isEmoji = (message) => {
+    const pattern = /^[\p{Emoji}\s]+$/u
+
+    return pattern.test(message)
+}
+
+const isProfanity = (message) => {
+    const pattern = /(bobo|idiota|mierda|tonto)/i
+
+    return pattern.test(message)
+
+}
+
+const isTestingAI = (message)=> {
+    const pattern = /\b(hablo con (un |una )?(bot|robot|IA)|estoy hablando con (un |una )?(robot|bot)|sos (un |una )?(bot|robot)|es (un |una )?bot)\b/i
+
+    return pattern.test(message)
+}
+
+
+export { isEmoji, isStartCommand, isGreetingMessage, isProfanity, isTestingAI }
