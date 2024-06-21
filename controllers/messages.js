@@ -2,18 +2,12 @@ import {
     sendMessage,
     sendMessageWithButton,
     updateMessage,
-    storeMessage,
     getAnswer,
     isCallBackQuery,
     isNotSupportedMessage,
     getNotSupportedAnswer,
-    getSession,
-    createSession,
-    updateSession,
-    updateActivity,
     saveMessage,
     saveFeedback,
-    createConversation,
     getHistory
 
 } from '../helpers/helpers.js'
@@ -31,7 +25,7 @@ const handleMessage = async(req, res, next) => {
         let session = await sessionManager(chatId,userId);
 
         
-        if(isCallBackQuery(req)){
+        if(isCallBackQuery(req)){ //callback query es cuando me responden el pulgar arriba o abajo y cuando me reaccionan los mensajes.
             console.log("Es callback query")
             const { message } = req.body.callback_query
             const rating = req.body.callback_query.data
