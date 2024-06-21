@@ -4,7 +4,6 @@ import cors from 'cors'
 import routerMaster from './routes/index.js'
 import * as dotenv from 'dotenv'
 import session from 'express-session'
-
 dotenv.config();
 
 const app = express()

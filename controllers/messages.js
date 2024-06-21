@@ -18,6 +18,7 @@ import {
 
 } from '../helpers/helpers.js'
 import { isStartCommand } from '../utils/regex.js';
+import sessionManager from '../utils/sessionManager.js';
 
 
 const handleMessage = async(req, res, next) => {
@@ -27,55 +28,9 @@ const handleMessage = async(req, res, next) => {
         const getUserId = req => isCallBackQuery(req) ? req.body.callback_query.from.id : req.body.message.from.id
         const chatId = getChatId(req)
         const userId = getUserId(req)
-        let session = await getSession(chatId)
-        // console.log("mi sessión es: ", session);
-        // sendMessage(chatId, "hola")
-        // return;
-        if(session.data == null){
-            // Si no existe la sesión, debe crearla
-            console.log("La sesión no existe. Hay que crear una sesión y una conversación")
-            
-            
-            // Crea la sesión
-            // para mañana: borrar en mongo todo lo relacionado a mi (chat_id = 7280516235)
+        let session = await sessionManager(chatId,userId);
 
-            /*
-                1. Empezar desde 0, sin nada creado
-                2. Teniendo session id, crear conversacion
-                3. manejo de error sobre createSession, tiene que pisar variable session.
-            
-            */ 
-            session = await createSession(chatId)
-
-            // Crea la conversacion
-            await createConversation(chatId, userId, session.data.session_id)
-
-        } else {
-            // Si la sesión está expirada, debe actualizar la sesión
-            const MAX_MINUTES = 30
-
-            let last = (parseInt(session.data.last_active))
-            let current = Date.now()
-            const diff = Math.abs(current - last)
-            const minutes = diff / (1000 * 60)
-
-            if(minutes > MAX_MINUTES){
-                console.log("La sesión está expirada. Hay que crear otra sesión y una nueva conversación")
-                
-                // Crea la nueva sesión
-                session = await updateSession(chatId)
-
-                // Crea la nueva conversación
-                await createConversation(chatId, userId, session.data.session_id)
-
-            } else {
-                // Si la sesión no está expirada, hay que actualizar la actividad
-                console.log("La sesión no expiró. Hay que actualizar la útlima actividad")
-                updateActivity(chatId)
-            }
-        }
-
-
+        
         if(isCallBackQuery(req)){
             console.log("Es callback query")
             const { message } = req.body.callback_query
