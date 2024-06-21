@@ -20,8 +20,10 @@ const handleMessage = async(req, res, next) => {
         
         const getChatId = req => isCallBackQuery(req) ? req.body.callback_query.message.chat.id : req.body.message.chat.id
         const getUserId = req => isCallBackQuery(req) ? req.body.callback_query.from.id : req.body.message.from.id
+
         const chatId = getChatId(req)
         const userId = getUserId(req)
+        
         let session = await sessionManager(chatId,userId);
 
         

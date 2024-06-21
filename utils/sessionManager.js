@@ -14,7 +14,7 @@ const sessionIsValid = (session) => {
     const diff = Math.abs(current - last);
     const minutes = diff / (1000*60);
 
-    return minutes > MAX_MINUTES
+    return minutes < MAX_MINUTES
 }
 
 const sessionManager = async (chatId, userId) => {
@@ -26,11 +26,11 @@ const sessionManager = async (chatId, userId) => {
         await createConversation(chatId, userId, session.data.session_id) //y le creamos una conversacion
 
     }else{
-        if(sessionIsValid(session)){ //si la ultima actividad de la session es mayor al valor indicado
-            session = await updateSession(chatId) //le hacemos un update de su session.
-            await createConversation(chatId, userId, session.data.session_id) //le creamos una nueva conversación.
+        if(sessionIsValid(session)){ //si la session aun es valida 
+            await updateActivity(chatId) //le updateamos la actividad para reiniciar su tiempo
         }else{
-            await updateActivity(chatId)
+            session = await updateSession(chatId) //le hacemos un update de su session.
+            await createConversation(chatId, userId, session.data.session_id) //le creamos una nueva conversación. 
         }
 
     }
