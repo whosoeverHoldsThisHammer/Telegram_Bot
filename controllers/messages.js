@@ -28,13 +28,24 @@ const handleMessage = async(req, res, next) => {
         const chatId = getChatId(req)
         const userId = getUserId(req)
         let session = await getSession(chatId)
-        
+        // console.log("mi sessión es: ", session);
+        // sendMessage(chatId, "hola")
+        // return;
         if(session.data == null){
             // Si no existe la sesión, debe crearla
             console.log("La sesión no existe. Hay que crear una sesión y una conversación")
-
+            
+            
             // Crea la sesión
-            createSession(chatId)
+            // para mañana: borrar en mongo todo lo relacionado a mi (chat_id = 7280516235)
+
+            /*
+                1. Empezar desde 0, sin nada creado
+                2. Teniendo session id, crear conversacion
+                3. manejo de error sobre createSession, tiene que pisar variable session.
+            
+            */ 
+            session = await createSession(chatId)
 
             // Crea la conversacion
             await createConversation(chatId, userId, session.data.session_id)
@@ -177,7 +188,6 @@ const handleMessage = async(req, res, next) => {
                 
                 if(isStartCommand(message.text)){
                     let answer = "Bienvenido!"
-
                     // Primero hay que guardar el mensaje entrante
                     const receivedMessage = {
                         chat_id: chatId,
@@ -187,6 +197,8 @@ const handleMessage = async(req, res, next) => {
                         content: message.text,
                         date: message.date
                     }
+
+                    console.log(receivedMessage)
 
                     saveMessage(receivedMessage)
                     .then(()=> {
@@ -217,7 +229,7 @@ const handleMessage = async(req, res, next) => {
                     
                 } else {
                     let answer = "Respuesta generada por la IA"
-
+                    console.log("imprimo")
                     // Primero hay que guardar el mensaje entrante
                     const receivedMessage = {
                         chat_id: chatId,
@@ -227,16 +239,23 @@ const handleMessage = async(req, res, next) => {
                         content: message.text,
                         date: message.date
                     }
+                    
+                    console.log(receivedMessage)
 
                     saveMessage(receivedMessage)
                     .then(()=> {
+                        console.log(1)
+
                         return getHistory(chatId, session.data.session_id)
                     })
                     .then((result)=> {
+                        console.log(2)
+
                         let history = result.data
                         return getAnswer(message.text, result.data)
                     })
                     .then((result)=> {
+                        console.log(3)
                         // let answer = result.data.answer
                         // console.log("Respuesta LLM:", result.data.answer)
                         answer = result.data.answer
@@ -265,6 +284,9 @@ const handleMessage = async(req, res, next) => {
                             console.log("Algo salío mal")
                             console.log(error)
                         })
+                    })
+                    .catch((error) => {
+                        console.log(error)
                     })
 
                     }

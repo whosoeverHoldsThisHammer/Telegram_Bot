@@ -3,6 +3,8 @@ import * as dotenv from 'dotenv'
 dotenv.config();
 
 const BASE_URL = `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}`
+const MONGO_URL = `http://localhost:${process.env.MONGO_PORT}`
+const LLM_URL = `http://localhost:${process.env.LLM_PORT}`
 
 
 const sendMessage = (chatId, message) => {
@@ -62,8 +64,8 @@ const updateMessage = (chatId, messageId)=> {
 const storeMessage = (msg)=> {
 
     let { chat, message_id, from, date, text } = msg
-
-    const url = "http://localhost:3000/conversations"
+    
+    const url = `${MONGO_URL}/conversations`
 
     const data = { 
         chat_id: chat.id,
@@ -84,7 +86,8 @@ const storeMessage = (msg)=> {
 
 const getAnswer = (message, history) => {
 
-    const url = "http://localhost:3001/test"
+    const url = `${LLM_URL}/chat`
+    //console.log("LLM URL: ",url)
 
     const data = {
         role: "human",
@@ -93,6 +96,13 @@ const getAnswer = (message, history) => {
     }   
 
     return axios.post(url, data)
+
+    // //para probar devuelve el mismo mensaje que me envian
+    // return {
+    //         data: {
+    //             answer: message
+    //         }
+    //     }
 
 }
 
@@ -129,60 +139,74 @@ const getNotSupportedAnswer = (req) => {
     }
 }
 
-const getSession = (chatId) => {
-    // console.log(chatId)
+const getSession = async (chatId) => {
+    const url = `${MONGO_URL}/sessions/${chatId}`
+    let data;
 
-    // Le pasa el chat id
-    const url = `http://localhost:3000/sessions/${chatId}`
+    try {
+        data = await axios.get(url)
+    } catch (error) {
+        console.log("GET SESSION ERROR: ", error)
+    }
 
-    return axios.get(url)
+    return data
 
 }
 
-const createSession = (chatId) => {
-    // console.log(chatId)
+const createSession = async (chatId) => {
+    console.log("estoy pasando por createSession")
 
-    // Mock
-    /* const data = {
-        chat_id: "555"
-    }*/
-
-    const url = "http://localhost:3000/sessions"
-
-    // Le pasa el chat id
+    const url = `${MONGO_URL}/sessions`
+    let response
     const data = {
         chat_id: chatId
     }
 
-    return axios.post(url, data)
-}
-
-const updateSession = (chatId) => {
-    // console.log(chatId)
+    try {
+        response = await axios.post(url, data)
+    } catch (error) {
+        console.log("error en create session: ", error)
+    }
     
-    // Le pasa el chat id
-    const url = `http://localhost:3000/sessions/updateSession/${chatId}`
 
+    return response;
+}
 
-    return axios.patch(url)
+const updateSession = async (chatId) => {
+     console.log("estoy pasando por updateSession")
+    const url = `${MONGO_URL}/sessions/updateSession/${chatId}`
+    let response
+
+    try {
+        response = await axios.patch(url)
+    } catch (error) {
+        console.log("error en update session: ", error)
+    }
+
+    return response
 
 }
 
 
-const updateActivity = (chatId) => {
-    // console.log(chatId)
-    
-    // Le pasa el chat id
-    const url = `http://localhost:3000/sessions/updateActivity/${chatId}`
+const updateActivity = async (chatId) => {
+     console.log("estoy pasando por updateactivity")
+    const url = `${MONGO_URL}/sessions/updateActivity/${chatId}`
+    let response
 
-    return axios.patch(url)
+    try {
+        response = await axios.patch(url)
+    } catch (error) {
+        console.log("updateActivity error: ", error)
+    }
+
+    return response
 }
 
-const saveMessage = (message) => {
+const saveMessage = async (message) => {
     const chatId = message.chat_id
     const sessionId = message.session_id
 
-    const url = `http://localhost:3000/conversations/${chatId}/${sessionId}/saveMessage`
+    const url = `${MONGO_URL}/conversations/${chatId}/${sessionId}/saveMessage`
 
     const data = {
         role: message.role,
@@ -191,44 +215,66 @@ const saveMessage = (message) => {
         date: message.date
     }
 
-    return axios.patch(url, data)
+    console.log(data)
+    let response
+    
+    try {
+        response = await axios.patch(url, data)
+    } catch (error) {
+        console.log("error en saveMessage: ", error)
+    }
+    
+    return response
 }
 
-const saveFeedback = (message) => {
+const saveFeedback = async (message) => {
     const chatId = message.chat_id
-
-    const url = `http://localhost:3000/conversations/${chatId}/${message.message_id}/saveFeedback`
+    const url = `${MONGO_URL}/conversations/${chatId}/${message.message_id}/saveFeedback`
 
     const data = {
         feedback: message.feedback
     }
 
+    try {
+        
+    } catch (error) {
+        console.log("saveFeedback error: ", error)
+    }
     return axios.patch(url, data)
 
 }
 
-const createConversation = (chatId, userId, sessionId)=> {
+const createConversation = async (chatId, userId, sessionId)=> {
     
-    const url = "http://localhost:3000/conversations"
-
+    const url = `${MONGO_URL}/conversations`
+    let response
     const data = {
         chat_id: chatId,
         user_id: userId,
         session_id: sessionId
     }
 
-    return axios.post(url, data)
+    try {
+        response = await axios.post(url, data)
+    } catch (error) {
+        console.log("Create Conversation error: ", error)
+    }
+    
+
+    return response
 
 }
 
-const getHistory = (chatId, sessionId)=> {
-    console.log("chat_id:", chatId)
-    console.log("session_id:", sessionId)
+const getHistory = async (chatId, sessionId)=> {
+    const url = `${MONGO_URL}/conversations/${chatId}/${sessionId}/messages`
 
-    // `http://localhost:3000/conversations/${chatId}}/${sessionId}}/messages?limit=1`
-    const url = `http://localhost:3000/conversations/${chatId}/${sessionId}/messages`
-
-    return axios.get(url)
+    let response
+    try {
+        response = await axios.get(url)
+    } catch (error) {
+        console.log("GetHistory error: ", error)
+    }
+    return response
 
 }
 
