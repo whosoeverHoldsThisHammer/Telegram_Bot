@@ -60,30 +60,6 @@ const updateMessage = (chatId, messageId)=> {
 
 }
 
-
-const storeMessage = (msg)=> {
-
-    let { chat, message_id, from, date, text } = msg
-    
-    const url = `${MONGO_URL}/conversations`
-
-    const data = { 
-        chat_id: chat.id,
-        message_id: message_id,
-        user_id: from.id,
-        role: from.is_bot === false ? "human" : "aiMessage",
-        date: new Date(date * 1000),
-        content: text,
-        context: "Telegram"
-    }
-
-    axios.post(url, data)
-    .then(result => console.log(result))
-    .catch(error => console.log(error))
-    
-}
-
-
 const getAnswer = (message, history) => {
 
     // const url = `${LLM_URL}/chat`
@@ -111,32 +87,47 @@ const isCallBackQuery = (req) => {
 }
 
 const isNotSupportedMessage = (req) => {
-    const { message } = req.body
-
-    return message.photo || message.voice || message.document || message.poll
+    if (!req.body){ //caso para cuando mandan una imagen sin texto, no hay body. mismo los audios, stickers, archivos etc...
+        return true
+    }else{ //si mandan texto + imagen existe body pero aun asi no es soportado.
+        const { message } = req.body
+        return message.photo || message.voice || message.document || message.poll
+    }
 }
 
 const getNotSupportedAnswer = (req) => {
     
-    const { message } = req.body
-    
-    if(message.photo){
+    try { //de momento siempre caemos en el primer return
+        if (!req.body){
+            return "No puedo interpretar mensajes que no sean escritos, porfavor cargá un ticket en jira :)"
+        }
+
+        const { message } = req.body
+
+        if(message.photo){
             
-        return "Lo siento. No estoy preparado para interpretar imágenes.\n Por favor, cargá un ticket en Jira."
+            return "Lo siento. No estoy preparado para interpretar imágenes.\n Por favor, cargá un ticket en Jira."
+    
+        } else if(message.voice){
+            
+            return "Lo siento. No estoy preparado para interpretar audios.\n Por favor, cargá un ticket en Jira."
+    
+        } else if(message.document){
+            
+            return "Lo siento. No estoy preparado para interpretar documentos.\n Por favor, cargá un ticket en Jira."
+    
+        } else if (message.poll){
+            
+            return "Lo siento. No estoy preparado para responder encuestas.\n ¿Qué querías preguntarme?."
+    
+        }
 
-    } else if(message.voice){
-        
-        return "Lo siento. No estoy preparado para interpretar audios.\n Por favor, cargá un ticket en Jira."
-
-    } else if(message.document){
-        
-        return "Lo siento. No estoy preparado para interpretar documentos.\n Por favor, cargá un ticket en Jira."
-
-    } else if (message.poll){
-        
-        return "Lo siento. No estoy preparado para responder encuestas.\n ¿Qué querías preguntarme?."
-
+    } catch (error) {
+        console.log("Not Supported Answer error: ", error)
     }
+    
+    
+    
 }
 
 const getSession = async (chatId) => {
@@ -154,8 +145,6 @@ const getSession = async (chatId) => {
 }
 
 const createSession = async (chatId) => {
-    console.log("estoy pasando por createSession")
-
     const url = `${MONGO_URL}/sessions`
     let response
     const data = {
@@ -173,7 +162,6 @@ const createSession = async (chatId) => {
 }
 
 const updateSession = async (chatId) => {
-     console.log("estoy pasando por updateSession")
     const url = `${MONGO_URL}/sessions/updateSession/${chatId}`
     let response
 
@@ -189,7 +177,6 @@ const updateSession = async (chatId) => {
 
 
 const updateActivity = async (chatId) => {
-     console.log("estoy pasando por updateactivity")
     const url = `${MONGO_URL}/sessions/updateActivity/${chatId}`
     let response
 
@@ -215,7 +202,7 @@ const saveMessage = async (message) => {
         date: message.date
     }
 
-    console.log(data)
+    console.log("Guardo lo siguiente: ", data)
     let response
     
     try {
@@ -282,7 +269,6 @@ export {
     sendMessage,
     sendMessageWithButton,
     updateMessage,
-    storeMessage,
     getAnswer,
     isCallBackQuery,
     isNotSupportedMessage,
