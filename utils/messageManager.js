@@ -5,7 +5,7 @@ import {
     getAnswer,
     getHistory
 } from '../helpers/helpers.js'
-import { isStartCommand } from './regex.js'
+import { isStartCommand, isGreetingMessage } from './regex.js'
 
 export const messageManager = async (chat_id, session, message) => {
     const receivedMessage = {
