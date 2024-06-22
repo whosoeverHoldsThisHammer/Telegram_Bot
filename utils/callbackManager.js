@@ -8,9 +8,7 @@ import {
 export const CallbackQuery = async (chatId, session, callbackQuery) => {
     const { message, data: rating } = callbackQuery;
     const messageId = message.message_id;
-    const answer = data.rating === "Positiva" 
-    ? "Gracias por el feedback"
-    : "Lo siento, parece que no contesté bien. Por favor, cargá un ticket en Jira"
+    const answer = "Gracias por el feedback";
 
     await updateMessage(chatId, messageId);
 

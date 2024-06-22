@@ -46,15 +46,7 @@ const handleAIMessage = async (chat_id, session, message) => {
     const history = await getHistory(chat_id, session.data.session_id);
     const aiResponse = await getAnswer(message.text, history.data);
     const answer = aiResponse.data.answer;
-    let response
-
-    if(isGreetingMessage(answer)){
-        response = await sendMessage(chat_id, answer);
-    }
-    else {
-        response = await sendMessageWithButton(chat_id, answer);
-    }
-    
+    const response = await sendMessageWithButton(chat_id, answer);
 
     const sentMessage = {
         chat_id,
