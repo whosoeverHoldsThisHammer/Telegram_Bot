@@ -6,13 +6,13 @@ import {
 } from '../helpers/helpers.js';
 
 export const CallbackQuery = async (chatId, session, callbackQuery) => {
-    const { message, data: rating } = callbackQuery;
+    const { message, data } = callbackQuery;
     const messageId = message.message_id;
-    const answer = data.rating === "Positiva" 
+    const answer = data === "Positiva" 
     ? "Gracias por el feedback"
     : "Lo siento, parece que no contesté bien. Por favor, cargá un ticket en Jira"
 
-    await updateMessage(chatId, messageId);
+    // await updateMessage(chatId, messageId);
 
     const response = await sendMessage(chatId, answer);
     const sentMessage = {
@@ -29,7 +29,7 @@ export const CallbackQuery = async (chatId, session, callbackQuery) => {
         chat_id: chatId,
         session_id: session.data.session_id,
         message_id: messageId,
-        feedback: rating
+        feedback: data
     };
     await saveFeedback(feedback);
 };
