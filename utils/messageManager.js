@@ -11,7 +11,7 @@ export const messageManager = async (chat_id, session, message) => {
     const receivedMessage = {
         chat_id,
         session_id: session.data.session_id,
-        role: "Human",
+        role: "human",
         message_id: message.message_id,
         content: message.text,
         date: message.date
@@ -33,7 +33,7 @@ const handleStartCommand = async (chat_id, session, message) => {
     const sentMessage = {
         chat_id,
         session_id: session.data.session_id,
-        role: "AI",
+        role: "ai",
         message_id: response.data.result.message_id,
         content: response.data.result.text,
         date: response.data.result.date
