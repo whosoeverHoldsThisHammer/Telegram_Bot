@@ -53,7 +53,9 @@ const updateMessage = (chatId, messageId)=> {
     const data = {
         chat_id: chatId,
         message_id: messageId,
-        reply_markup: {}
+        reply_markup: JSON.stringify({
+            inline_keyboard: []
+        })
     }
 
     return axios.post(url, data)

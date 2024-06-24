@@ -12,7 +12,7 @@ export const CallbackQuery = async (chatId, session, callbackQuery) => {
     ? "Gracias por el feedback"
     : "Lo siento, parece que no contesté bien. Por favor, cargá un ticket en Jira"
 
-    // await updateMessage(chatId, messageId);
+    await updateMessage(chatId, messageId);
 
     const response = await sendMessage(chatId, answer);
     const sentMessage = {
