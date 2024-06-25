@@ -64,23 +64,23 @@ const updateMessage = (chatId, messageId)=> {
 
 const getAnswer = (message, history) => {
 
-    // const url = `${LLM_URL}/chat`
-    // //console.log("LLM URL: ",url)
+    const url = `${LLM_URL}/chat`
+    //console.log("LLM URL: ",url)
 
-    // const data = {
-    //     role: "human",
-    //     content: message,
-    //     history: history
-    // }   
+    const data = {
+        role: "human",
+        content: message,
+        history: history
+    }   
 
-    // return axios.post(url, data)
+    return axios.post(url, data)
 
     //para probar devuelve el mismo mensaje que me envian
-    return {
-            data: {
-                answer: message
-            }
-        }
+    // return {
+    //         data: {
+    //             answer: message
+    //         }
+    //     }
 
 }
 
