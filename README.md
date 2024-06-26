@@ -4,7 +4,7 @@ Proyecto con backend para contestar de forma automática a las consultas de los 
 
 ## Registrar un bot en Telegram
 
-1. Empezar una conversación con [@AccessBot](https://t.me/llm_testing_bot)
+1. Empezar una conversación con [@BotFather](https://telegram.me/BotFather)
 2. Escribir /newbot y completar los datos para registrar un bot
 3. Guardar en el .env el token del bot
 
