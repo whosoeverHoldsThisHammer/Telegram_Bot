@@ -4,7 +4,7 @@ Proyecto con backend para contestar de forma automática a las consultas de los 
 
 ## Registrar un bot en Telegram
 
-1. Empezar una conversación con [@BotFather](https://telegram.me/BotFather)
+1. Empezar una conversación con [@AccessBot](https://t.me/llm_testing_bot)
 2. Escribir /newbot y completar los datos para registrar un bot
 3. Guardar en el .env el token del bot
 
@@ -32,12 +32,14 @@ Proyecto con backend para contestar de forma automática a las consultas de los 
 
 5. Copiar la URL que generó Ngrok
 6. Reemplazar la URL en el archivo webhook.js
-7. Establecer el webhook para que el bot escuche los mensajes que envían los usuarios
+7. ![image](https://github.com/whosoeverHoldsThisHammer/Telegram_Bot/assets/102133841/3d478cc0-9bff-4bd9-bed9-88dd9967fa0a)
+
+8. Establecer el webhook para que el bot escuche los mensajes que envían los usuarios
 
     ```
     node webhook.js
     ```
-8. Levantar servidor local con una API con la persistencia
+9. Levantar servidor local con una API con la persistencia
 
 - Persistencia - https://github.com/FacuZ7/API_AccessChatbot_Conversations
 
