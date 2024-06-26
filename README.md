@@ -39,10 +39,10 @@ Proyecto con backend para contestar de forma automática a las consultas de los 
     ```
 8. Levantar servidor local con una API con la persistencia
 
-- Persistencia - https://github.com/whosoeverHoldsThisHammer/API_Persistencia_Bot
+- Persistencia - https://github.com/FacuZ7/API_AccessChatbot_Conversations
 
 9. Levantar servidor local con una API con el LLM
 
-- LLM - https://github.com/whosoeverHoldsThisHammer/API_Chatbot_LLM
+- LLM - https://github.com/FacuZ7/LLMService_ProyectoAccess
 
 10. Escribir un mensaje al bot 🤖🚀
