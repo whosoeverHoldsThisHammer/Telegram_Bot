@@ -6,7 +6,7 @@ import {
 } from '../helpers/helpers.js';
 
 export const CallbackQuery = async (chatId, session, callbackQuery) => {
-    const { message, data: rating } = callbackQuery;
+    const { message, data } = callbackQuery;
     const messageId = message.message_id;
     const answer = rating === "Positiva" 
     ? "Gracias por el feedback"
@@ -29,7 +29,7 @@ export const CallbackQuery = async (chatId, session, callbackQuery) => {
         chat_id: chatId,
         session_id: session.data.session_id,
         message_id: messageId,
-        feedback: rating
+        feedback: data
     };
     await saveFeedback(feedback);
 };

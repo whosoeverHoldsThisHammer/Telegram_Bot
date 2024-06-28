@@ -53,7 +53,9 @@ const updateMessage = (chatId, messageId)=> {
     const data = {
         chat_id: chatId,
         message_id: messageId,
-        reply_markup: {}
+        reply_markup: JSON.stringify({
+            inline_keyboard: []
+        })
     }
 
     return axios.post(url, data)
@@ -218,16 +220,20 @@ const saveFeedback = async (message) => {
     const chatId = message.chat_id
     const url = `${MONGO_URL}/conversations/${chatId}/${message.message_id}/saveFeedback`
 
+    let response
+ 
+
     const data = {
         feedback: message.feedback
     }
 
     try {
-        
+        response = await axios.patch(url, data)
     } catch (error) {
         console.log("saveFeedback error: ", error)
     }
-    return axios.patch(url, data)
+
+    return response
 
 }
 

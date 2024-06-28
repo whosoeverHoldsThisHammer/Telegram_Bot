@@ -19,8 +19,7 @@ const sessionIsValid = (session) => {
 
 const sessionManager = async (chatId, userId) => {
     let session = await getSession(chatId);
-
-    if(session.data == null){ //si la persona que me habla no tiene session 
+    if(session.data == null || session.data == ""){ //si la persona que me habla no tiene session 
 
         session = await createSession(chatId); // le creamos una session
         await createConversation(chatId, userId, session.data.session_id) //y le creamos una conversacion
